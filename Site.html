@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unity For Beginning Developers</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            unity: {
+              50: '#e8f4ff',
+              100: '#c8e4ff',
+              200: '#9ccfff',
+              300: '#69b3ff',
+              400: '#3d92ff',
+              500: '#1870f0',
+              600: '#0a55d6',
+              700: '#0844ad',
+              800: '#0b388a',
+              900: '#0f3070',
+              950: '#091d45',
+            }
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Consolas', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    * { font-family: 'Inter', sans-serif; }
+
+    html { scroll-behavior: smooth; }
+
+    .code-block {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      line-height: 1.6;
+    }
+
+    .keyword { color: #cba6f7; }
+    .string { color: #a6e3a1; }
+    .comment { color: #6c7086; font-style: italic; }
+    .type { color: #89b4fa; }
+    .number { color: #fab387; }
+    .method { color: #89dceb; }
+
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #1870f0, #3d92ff, #69b3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-gradient {
+      background: linear-gradient(135deg, #091d45 0%, #0b388a 30%, #0844ad 60%, #1870f0 100%);
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .drop-zone {
+      border: 2px dashed rgba(24, 112, 240, 0.4);
+      transition: all 0.3s ease;
+    }
+    .drop-zone.drag-over {
+      border-color: #1870f0;
+      background: rgba(24, 112, 240, 0.08);
+    }
+
+    .article-step {
+      position: relative;
+      padding-left: 3rem;
+    }
+    .article-step::before {
+      content: '';
+      position: absolute;
+      left: 0.75rem;
+      top: 2.5rem;
+      bottom: -1rem;
+      width: 2px;
+      background: #1870f0;
+    }
+    .article-step:last-child::before {
+      display: none;
+    }
+
+    .step-number {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background: #1870f0;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    .progress-ring circle {
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .category-badge {
+      transition: all 0.2s ease;
+    }
+    .category-badge:hover {
+      transform: scale(1.05);
+    }
+
+    .tab-active {
+      border-bottom: 2px solid #1870f0;
+      color: #1870f0;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(24, 112, 240, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(24, 112, 240, 0.6); }
+    }
+
+    .modal-overlay {
+      backdrop-filter: blur(8px);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+  <!-- Progress Bar -->
+  <div class="fixed top-0 left-0 h-1 bg-unity-500 z-[60] transition-all duration-300" id="progressBar" style="width: 0%;"></div>
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-gray-950/80 border-b border-gray-200/50 dark:border-gray-800/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <a href="#home" class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-unity-600 rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-sm">U</span>
+          </div>
+          <span class="font-bold text-lg hidden sm:block">
+            Unity<span class="text-unity-500"> For Beginners</span>
+          </span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="#home" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-unity-600 dark:hover:text-unity-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Главная</a>
+          <a href="#scripts" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-unity-600 dark:hover:text-unity-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Скрипты</a>
+          <a href="#shaders" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-unity-600 dark:hover:text-unity-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Шейдеры</a>
+          <a href="#articles" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-unity-600 dark:hover:text-unity-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Статьи</a>
+          <a href="#upload" class="nav-link px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-unity-600 dark:hover:text-unity-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">Загрузить</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+            <i data-lucide="sun" id="sunIcon" class="w-5 h-5 hidden dark:block"></i>
+            <i data-lucide="moon" id="moonIcon" class="w-5 h-5 block dark:hidden"></i>
+          </button>
+          <button onclick="openModal('loginModal')" class="px-4 py-2 text-sm font-medium text-unity-600 dark:text-unity-400 hover:bg-unity-50 dark:hover:bg-unity-900/30 rounded-lg transition-all">
+            Войти
+          </button>
+          <button onclick="openModal('signupModal')" class="px-4 py-2 text-sm font-medium text-white bg-unity-600 hover:bg-unity-700 rounded-lg transition-all">
+            Регистрация
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-gradient min-h-screen flex items-center pt-16 relative overflow-hidden">
+    <!-- Background decorations -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-unity-400/20 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-float" style="animation-delay: 1.5s;"></div>
+      <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-indigo-400/15 rounded-full blur-3xl animate-float" style="animation-delay: 0.8s;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div data-aos="fade-right">
+          <div class="inline-flex items-center gap-2 px-4 py-2 glass rounded-full mb-6">
+            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            <span class="text-white/80 text-sm">Открытая платформа для разработчиков</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6">
+            Unity For
+            <span class="block text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-cyan-300">Beginning Developers</span>
+          </h1>
+          <p class="text-lg text-white/70 mb-8 leading-relaxed max-w-lg">
+            Загружайте скрипты, шейдеры и ассеты. Делитесь знаниями через пошаговые статьи. Создавайте сообщество начинающих разработчиков Unity.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#upload" class="px-8 py-3.5 bg-white text-unity-700 font-semibold rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl">
+              Загрузить ресурс
+            </a>
+            <a href="#articles" class="px-8 py-3.5 glass text-white font-semibold rounded-xl hover:bg-white/20 transition-all">
+              Читать статьи
+            </a>
+          </div>
+          <div class="flex items-center gap-8 mt-10">
+            <div>
+              <div class="text-3xl font-bold text-white">500+</div>
+              <div class="text-white/60 text-sm">Скриптов</div>
+            </div>
+            <div class="w-px h-12 bg-white/20"></div>
+            <div>
+              <div class="text-3xl font-bold text-white">120+</div>
+              <div class="text-white/60 text-sm">Шейдеров</div>
+            </div>
+            <div class="w-px h-12 bg-white/20"></div>
+            <div>
+              <div class="text-3xl font-bold text-white">80+</div>
+              <div class="text-white/60 text-sm">Статей</div>
+            </div>
+          </div>
+        </div>
+
+        <div data-aos="fade-left" class="hidden lg:block">
+          <div class="glass rounded-2xl p-6 animate-float">
+            <div class="code-block rounded-xl p-4 text-sm overflow-x-auto">
+              <div><span class="comment">// Ваш первый скрипт на Unity</span></div>
+              <div><span class="keyword">using</span> UnityEngine;</div>
+              <div class="mt-2"><span class="keyword">public class</span> <span class="type">PlayerController</span> : <span class="type">MonoBehaviour</span></div>
+              <div>{</div>
+              <div class="pl-4"><span class="keyword">public float</span> speed = <span class="number">5f</span>;</div>
+              <div class="pl-4 mt-1"><span class="keyword">void</span> <span class="method">Update</span>()</div>
+              <div class="pl-4">{</div>
+              <div class="pl-8"><span class="keyword">float</span> h = Input.<span class="method">GetAxis</span>(<span class="string">"Horizontal"</span>);</div>
+              <div class="pl-8"><span class="keyword">float</span> v = Input.<span class="method">GetAxis</span>(<span class="string">"Vertical"</span>);</div>
+              <div class="pl-8 mt-1">transform.<span class="method">Translate</span>(</div>
+              <div class="pl-12">Vector3.right * h * speed * Time.deltaTime +</div>
+              <div class="pl-12">Vector3.forward * v * speed * Time.deltaTime</div>
+              <div class="pl-8">);</div>
+              <div class="pl-4">}</div>
+              <div>}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <h2 class="text-3xl font-bold mb-4">Категории ресурсов</h2>
+        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Выберите категорию, которая вам интересна, и найдите нужные материалы для изучения</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" data-aos="fade-up" data-aos-delay="100">
+        <button onclick="filterByCategory('scripts')" class="category-badge flex flex-col items-center gap-3 p-6 rounded-xl bg-gray-50 dark:bg-gray-900 hover:bg-unity-50 dark:hover:bg-unity-900/30 transition-all group">
+          <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i data-lucide="file-code-2" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
+          </div>
+          <span class="font-medium text-sm">Скрипты</span>
+          <span class="text-xs text-gray-500">500+</span>
+        </button>
+
+        <button onclick="filterByCategory('shaders')" class="category-badge flex flex-col items-center gap-3 p-6 rounded-xl bg-gray-50 dark:bg-gray-900 hover:bg-unity-50 dark:hover:bg-unity-900/30 transition-all group">
+          <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i data-lucide="palette" class="w-6 h-6 text-purple-600 dark:text-purple-400"></i>
+          </div>
+          <span class="font-medium text-sm">Шейдеры</span>
+          <span class="text-xs text-gray-500">120+</span>
+        </button>
+
+        <button onclick="filterByCategory('prefabs')" class="category-badge flex flex-col items-center gap-3 p-6 rounded-xl bg-gray-50 dark:bg-gray-900 hover:bg-unity-50 dark:hover:bg-unity-900/30 transition-all group">
+          <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i data-lucide="box" class="w-6 h-6 text-green-600 dark:text-green-400"></i>
+          </div>
+          <span class="font-medium text-sm">Префабы</span>
+          <span class="text-xs text-gray-500">200+</span>
+        </button>
+
+        <button onclick="filterByCategory('materials')" class="category-badge flex flex-col items-center gap-3 p-6 rounded-xl bg-gray-50 dark:bg-gray-900 hover:bg-unity-50 dark:hover:bg-unity-900/30 transition-all group">
+          <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i data-lucide="spray-can" class="w-6 h-6 text-amber-600 dark:text-amber-400"></i>
+          </div>
+          <span class="font-medium text-sm">Материалы</span>
+          <span class="text-xs text-gray-500">150+</span>
+        </button>
+
+        <button onclick="filterByCategory('articles')" class="category-badge flex flex-col items-center gap-3 p-6 rounded-xl bg-gray-50 dark:bg-gray-900 hover:bg-unity-50 dark:hover:bg-unity-900/30 transition-all group">
+          <div class="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i data-lucide="book-open" class="w-6 h-6 text-rose-600 dark:text-rose-400"></i>
+          </div>
+          <span class="font-medium text-sm">Статьи</span>
+          <span class="text-xs text-gray-500">80+</span>
+        </button>
+
+        <button onclick="filterByCategory('tutorials')" class="category-badge flex flex-col items-center gap-3 p-6 rounded-xl bg-gray-50 dark:bg-gray-900 hover:bg-unity-50 dark:hover:bg-unity-900/30 transition-all group">
+          <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+            <i data-lucide="graduation-cap" class="w-6 h-6 text-cyan-600 dark:text-cyan-400"></i>
+          </div>
+          <span class="font-medium text-sm">Уроки</span>
+          <span class="text-xs text-gray-500">60+</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts Section -->
+  <section id="scripts" class="py-16 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8" data-aos="fade-up">
+        <div>
+          <h2 class="text-3xl font-bold mb-2">Скрипты</h2>
+          <p class="text-gray-600 dark:text-gray-400">Готовые скрипты для начинающих разработчиков</p>
+        </div>
+        <div class="flex items-center gap-3 mt-4 sm:mt-0">
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="searchScripts" placeholder="Поиск скриптов..." class="pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm w-64 focus:ring-2 focus:ring-unity-500 focus:border-transparent outline-none transition-all" oninput="filterScripts()">
+          </div>
+          <select id="sortScripts" onchange="sortScripts()" class="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm focus:ring-2 focus:ring-unity-500 outline-none">
+            <option value="newest">Новые</option>
+            <option value="popular">Популярные</option>
+            <option value="name">По названию</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="scriptsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Script cards will be rendered here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Shaders Section -->
+  <section id="shaders" class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8" data-aos="fade-up">
+        <div>
+          <h2 class="text-3xl font-bold mb-2">Шейдеры</h2>
+          <p class="text-gray-600 dark:text-gray-400">Визуальные эффекты и шейдерные программы</p>
+        </div>
+        <button onclick="openModal('uploadShaderModal')" class="mt-4 sm:mt-0 px-5 py-2.5 bg-unity-600 hover:bg-unity-700 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+          <i data-lucide="upload" class="w-4 h-4"></i>
+          Загрузить шейдер
+        </button>
+      </div>
+
+      <div id="shadersGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Shader cards will be rendered here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Articles Section -->
+  <section id="articles" class="py-16 bg-gray-50 dark:bg-gray-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8" data-aos="fade-up">
+        <div>
+          <h2 class="text-3xl font-bold mb-2">Статьи и руководства</h2>
+          <p class="text-gray-600 dark:text-gray-400">Пошаговые статьи от опытных разработчиков</p>
+        </div>
+        <button onclick="openModal('createArticleModal')" class="mt-4 sm:mt-0 px-5 py-2.5 bg-unity-600 hover:bg-unity-700 text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          Написать статью
+        </button>
+      </div>
+
+      <!-- Article Tabs -->
+      <div class="flex gap-1 mb-8 border-b border-gray-200 dark:border-gray-700" data-aos="fade-up">
+        <button onclick="switchArticleTab('all')" class="article-tab tab-active px-4 py-3 text-sm font-medium transition-all" data-tab="all">Все статьи</button>
+        <button onclick="switchArticleTab('beginner')" class="article-tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-unity-600 transition-all" data-tab="beginner">Для начинающих</button>
+        <button onclick="switchArticleTab('intermediate')" class="article-tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-unity-600 transition-all" data-tab="intermediate">Средний уровень</button>
+        <button onclick="switchArticleTab('advanced')" class="article-tab px-4 py-3 text-sm font-medium text-gray-500 hover:text-unity-600 transition-all" data-tab="advanced">Продвинутые</button>
+      </div>
+
+      <div id="articlesGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Article cards will be rendered here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Upload Section -->
+  <section id="upload" class="py-16 bg-white dark:bg-gray-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <h2 class="text-3xl font-bold mb-4">Загрузить ресурс</h2>
+        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Поделитесь своими скриптами, шейдерами или другими материалами с сообществом</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto">
+        <div class="glass rounded-2xl p-8 dark:border-gray-800" data-aos="fade-up">
+          <div class="space-y-6">
+            <!-- Resource Type -->
+            <div>
+              <label class="block text-sm font-medium mb-3">Тип ресурса</label>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <label class="cursor-pointer">
+                  <input type="radio" name="resourceType" value="script" class="peer hidden" checked>
+                  <div class="peer-checked:bg-unity-100 peer-checked:border-unity-500 peer-checked:text-unity-700 dark:peer-checked:bg-unity-900/30 dark:peer-checked:border-unity-500 dark:peer-checked:text-unity-300 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-center hover:border-unity-300 transition-all">
+                    <i data-lucide="file-code-2" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="text-sm font-medium">Скрипт</span>
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="resourceType" value="shader" class="peer hidden">
+                  <div class="peer-checked:bg-unity-100 peer-checked:border-unity-500 peer-checked:text-unity-700 dark:peer-checked:bg-unity-900/30 dark:peer-checked:border-unity-500 dark:peer-checked:text-unity-300 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-center hover:border-unity-300 transition-all">
+                    <i data-lucide="palette" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="text-sm font-medium">Шейдер</span>
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="resourceType" value="prefab" class="peer hidden">
+                  <div class="peer-checked:bg-unity-100 peer-checked:border-unity-500 peer-checked:text-unity-700 dark:peer-checked:bg-unity-900/30 dark:peer-checked:border-unity-500 dark:peer-checked:text-unity-300 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-center hover:border-unity-300 transition-all">
+                    <i data-lucide="box" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="text-sm font-medium">Префаб</span>
+                  </div>
+                </label>
+                <label class="cursor-pointer">
+                  <input type="radio" name="resourceType" value="other" class="peer hidden">
+                  <div class="peer-checked:bg-unity-100 peer-checked:border-unity-500 peer-checked:text-unity-700 dark:peer-checked:bg-unity-900/30 dark:peer-checked:border-unity-500 dark:peer-checked:text-unity-300 p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 text-center hover:border-unity-300 transition-all">
+                    <i data-lucide="package" class="w-6 h-6 mx-auto mb-2"></i>
+                    <span class="text-sm font-medium">Другое</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Title -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Название</label>
+              <input type="text" id="uploadTitle" placeholder="Например: Player Controller" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 focus:border-transparent outline-none transition-all">
+            </div>
+
+            <!-- Description -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Описание</label>
+              <textarea id="uploadDescription" rows="4" placeholder="Опишите ваш ресурс, как его использовать..." class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 focus:border-transparent outline-none transition-all resize-none"></textarea>
+            </div>
+
+            <!-- Category -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Категория</label>
+              <select id="uploadCategory" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+                <option value="movement">Движение</option>
+                <option value="physics">Физика</option>
+                <option value="ui">Интерфейс</option>
+                <option value="audio">Аудио</option>
+                <option value="camera">Камера</option>
+                <option value="ai">Искусственный интеллект</option>
+                <option value="effects">Эффекты</option>
+                <option value="other">Другое</option>
+              </select>
+            </div>
+
+            <!-- Difficulty -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Уровень сложности</label>
+              <div class="flex gap-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="difficulty" value="beginner" class="accent-unity-600" checked>
+                  <span class="text-sm">Начальный</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="difficulty" value="intermediate" class="accent-unity-600">
+                  <span class="text-sm">Средний</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="difficulty" value="advanced" class="accent-unity-600">
+                  <span class="text-sm">Продвинутый</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Code/Content -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Код / Содержимое</label>
+              <textarea id="uploadCode" rows="8" placeholder="// Вставьте ваш код здесь..." class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-800 text-gray-200 font-mono text-sm focus:ring-2 focus:ring-unity-500 focus:border-transparent outline-none transition-all resize-none"></textarea>
+            </div>
+
+            <!-- Drag & Drop -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Или перетащите файл</label>
+              <div id="dropZone" class="drop-zone rounded-xl p-8 text-center cursor-pointer">
+                <i data-lucide="upload-cloud" class="w-12 h-12 mx-auto mb-3 text-gray-400"></i>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Перетащите файл сюда или <span class="text-unity-600 dark:text-unity-400 font-medium">выберите файл</span></p>
+                <p class="text-xs text-gray-500 mt-2">.cs, .shader, .unitypackage, .png, .jpg до 10MB</p>
+                <input type="file" id="fileInput" class="hidden" accept=".cs,.shader,.unitypackage,.png,.jpg,.jpeg,.gif,.mp4">
+              </div>
+              <div id="filePreview" class="hidden mt-3 p-3 bg-unity-50 dark:bg-unity-900/20 rounded-xl flex items-center gap-3">
+                <i data-lucide="file" class="w-5 h-5 text-unity-600"></i>
+                <span id="fileName" class="text-sm text-unity-700 dark:text-unity-300"></span>
+                <button onclick="clearFile()" class="ml-auto text-gray-400 hover:text-red-500">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div>
+              <label class="block text-sm font-medium mb-2">Теги (через запятую)</label>
+              <input type="text" id="uploadTags" placeholder="controller, movement, player" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 focus:border-transparent outline-none transition-all">
+            </div>
+
+            <button onclick="submitResource()" class="w-full py-3.5 bg-unity-600 hover:bg-unity-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+              <i data-lucide="upload" class="w-5 h-5"></i>
+              Загрузить ресурс
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="py-16 bg-unity-900 dark:bg-unity-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center" data-aos="fade-up">
+          <div class="text-4xl font-bold text-white mb-2" id="statScripts">0</div>
+          <div class="text-white/60 text-sm">Скриптов загружено</div>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+          <div class="text-4xl font-bold text-white mb-2" id="statShaders">0</div>
+          <div class="text-white/60 text-sm">Шейдеров</div>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+          <div class="text-4xl font-bold text-white mb-2" id="statArticles">0</div>
+          <div class="text-white/60 text-sm">Статей написано</div>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+          <div class="text-4xl font-bold text-white mb-2" id="statUsers">0</div>
+          <div class="text-white/60 text-sm">Разработчиков</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 dark:bg-black text-gray-400 py-12 border-t border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <div class="md:col-span-2">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 bg-unity-600 rounded-lg flex items-center justify-center">
+              <span class="text-white font-bold text-sm">U</span>
+            </div>
+            <span class="font-bold text-lg text-white">Unity For Beginners</span>
+          </div>
+          <p class="text-sm leading-relaxed max-w-md">
+            Открытая платформа для начинающих разработчиков Unity. Делитесь знаниями, загружайте ресурсы и учитесь вместе с сообществом.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Ресурсы</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#scripts" class="hover:text-unity-400 transition-colors">Скрипты</a></li>
+            <li><a href="#shaders" class="hover:text-unity-400 transition-colors">Шейдеры</a></li>
+            <li><a href="#articles" class="hover:text-unity-400 transition-colors">Статьи</a></li>
+            <li><a href="#upload" class="hover:text-unity-400 transition-colors">Загрузить</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white font-semibold mb-4">Сообщество</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-unity-400 transition-colors">Discord</a></li>
+            <li><a href="#" class="hover:text-unity-400 transition-colors">GitHub</a></li>
+            <li><a href="#" class="hover:text-unity-400 transition-colors">Twitter</a></li>
+            <li><a href="#" class="hover:text-unity-400 transition-colors">Форум</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center text-sm">
+        <p>© 2025 Unity For Beginning Developers. Все права защищены.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/50" onclick="closeModal('loginModal')"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-8 relative transform transition-all scale-100">
+        <button onclick="closeModal('loginModal')" class="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="text-center mb-6">
+          <div class="w-14 h-14 bg-unity-100 dark:bg-unity-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="log-in" class="w-7 h-7 text-unity-600 dark:text-unity-400"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Добро пожаловать</h3>
+          <p class="text-gray-500 text-sm">Войдите в свой аккаунт</p>
+        </div>
+        <div class="space-y-4">
+          <input type="email" placeholder="Email" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+          <input type="password" placeholder="Пароль" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+          <button onclick="loginUser()" class="w-full py-3 bg-unity-600 hover:bg-unity-700 text-white font-semibold rounded-xl transition-all">Войти</button>
+        </div>
+        <p class="text-center mt-4 text-sm text-gray-500">
+          Нет аккаунта? <button onclick="closeModal('loginModal'); openModal('signupModal')" class="text-unity-600 dark:text-unity-400 font-medium">Зарегистрироваться</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/50" onclick="closeModal('signupModal')"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
+        <button onclick="closeModal('signupModal')" class="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="text-center mb-6">
+          <div class="w-14 h-14 bg-unity-100 dark:bg-unity-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="user-plus" class="w-7 h-7 text-unity-600 dark:text-unity-400"></i>
+          </div>
+          <h3 class="text-2xl font-bold mb-2">Создать аккаунт</h3>
+          <p class="text-gray-500 text-sm">Присоединяйтесь к сообществу</p>
+        </div>
+        <div class="space-y-4">
+          <input type="text" id="signupName" placeholder="Имя пользователя" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+          <input type="email" id="signupEmail" placeholder="Email" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+          <input type="password" id="signupPassword" placeholder="Пароль" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+          <select class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+            <option value="">Уровень опыта</option>
+            <option value="beginner">Начинающий</option>
+            <option value="intermediate">Средний</option>
+            <option value="advanced">Продвинутый</option>
+          </select>
+          <button onclick="signupUser()" class="w-full py-3 bg-unity-600 hover:bg-unity-700 text-white font-semibold rounded-xl transition-all">Зарегистрироваться</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Article Modal -->
+  <div id="createArticleModal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/50" onclick="closeModal('createArticleModal')"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+        <button onclick="closeModal('createArticleModal')" class="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold mb-2">Написать статью</h3>
+          <p class="text-gray-500 text-sm">Поделитесь знаниями с сообществом</p>
+        </div>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium mb-2">Заголовок статьи</label>
+            <input type="text" id="articleTitle" placeholder="Например: Как создать контроллер персонажа" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Краткое описание</label>
+            <textarea id="articleSummary" rows="2" placeholder="О чём эта статья?" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none resize-none"></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Уровень</label>
+              <select id="articleLevel" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+                <option value="beginner">Начинающий</option>
+                <option value="intermediate">Средний</option>
+                <option value="advanced">Продвинутый</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Время чтения</label>
+              <input type="text" id="articleReadTime" placeholder="10 мин" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Введение</label>
+            <textarea id="articleIntro" rows="3" placeholder="Введите описание и контекст статьи..." class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 focus:ring-2 focus:ring-unity-500 outline-none resize-none"></textarea>
+          </div>
+
+          <!-- Steps -->
+          <div>
+            <label class="block text-sm font-medium mb-3">Пошаговые действия</label>
+            <div id="stepsContainer" class="space-y-4">
+              <div class="step-entry p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                <div class="flex items-center gap-3 mb-3">
+                  <span class="w-8 h-8 bg-unity-100 dark:bg-unity-900/30 rounded-full flex items-center justify-center text-unity-600 dark:text-unity-400 font-bold text-sm">1</span>
+                  <input type="text" class="step-title flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-sm outline-none focus:ring-2 focus:ring-unity-500" placeholder="Название шага">
+                  <button onclick="removeStep(this)" class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <textarea class="step-content w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-sm outline-none focus:ring-2 focus:ring-unity-500 resize-none" rows="3" placeholder="Описание шага..."></textarea>
+                <div class="mt-2">
+                  <textarea class="step-code w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-800 text-gray-200 font-mono text-xs outline-none focus:ring-2 focus:ring-unity-500 resize-none" rows="4" placeholder="// Код (необязательно)..."></textarea>
+                </div>
+              </div>
+            </div>
+            <button onclick="addStep()" class="mt-4 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl text-sm text-gray-500 hover:border-unity-500 hover:text-unity-500 transition-all flex items-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              Добавить шаг
+            </button>
+          </div>
+
+          <button onclick="submitArticle()" class="w-full py-3.5 bg-unity-600 hover:bg-unity-700 text-white font-semibold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-5 h-5"></i>
+            Опубликовать статью
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Script Modal -->
+  <div id="viewScriptModal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/50" onclick="closeModal('viewScriptModal')"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+        <button onclick="closeModal('viewScriptModal')" class="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div id="scriptModalContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Article Modal -->
+  <div id="viewArticleModal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/50" onclick="closeModal('viewArticleModal')"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+        <button onclick="closeModal('viewArticleModal')" class="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div id="articleModalContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-[200] hidden transform translate-y-4 opacity-0 transition-all duration-300">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 flex items-center gap-3 max-w-sm">
+      <div id="toastIcon" class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"></div>
+      <div>
+        <p id="toastTitle" class="font-semibold text-sm"></p>
+        <p id="toastMessage" class="text-xs text-gray-500 mt-0.5"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== DATA STORE =====
+    const appData = {
+      scripts: [
+        {
+          id: 1,
+          title: "Player Controller",
+          description: "Базовый контроллер персонажа с движением WASD и прыжками. Идеально для начинающих.",
+          author: "AlexDev",
+          authorAvatar: "A",
+          category: "movement",
+          difficulty: "beginner",
+          downloads: 2340,
+          likes: 189,
+          date: "2025-01-15",
+          tags: ["controller", "movement", "player"],
+          code: `using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    public float speed = 5f;
+    public float jumpForce = 8f;
+    private Rigidbody rb;
+    private bool isGrounded;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
+    void Update()
+    {
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        
+        Vector3 move = transform.right * h + transform.forward * v;
+        rb.velocity = new Vector3(move.x * speed, rb.velocity.y, move.z * speed);
+        
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.CompareTag("Ground"))
+            isGrounded = true;
+    }
+
+    void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.CompareTag("Ground"))
+            isGrounded = false;
+    }
+}`
+        },
+        {
+          id: 2,
+          title: "Simple Camera Follow",
+          description: "Камера плавно следует за игроком с настройкой высоты и дистанции.",
+          author: "UnityNewbie",
+          authorAvatar: "U",
+          category: "camera",
+          difficulty: "beginner",
+          downloads: 1890,
+          likes: 156,
+          date: "2025-01-20",
+          tags: ["camera", "follow", "smooth"],
+          code: `using UnityEngine;
+
+public class CameraFollow : MonoBehaviour
+{
+    public Transform target;
+    public float smoothSpeed = 5f;
+    public Vector3 offset = new Vector3(0, 2, -5);
+
+    void LateUpdate()
+    {
+        Vector3 desiredPosition = target.position + offset;
+        Vector3 smoothedPosition = Vector3.Lerp(
+            transform.position, 
+            desiredPosition, 
+            smoothSpeed * Time.deltaTime
+        );
+        transform.position = smoothedPosition;
+        transform.LookAt(target);
+    }
+}`
+        },
+        {
+          id: 3,
+          title: "Health System",
+          description: "Система здоровья с получением урона, восстановлением и UI обновлением.",
+          author: "CodeMaster",
+          authorAvatar: "C",
+          category: "ui",
+          difficulty: "intermediate",
+          downloads: 3200,
+          likes: 278,
+          date: "2025-02-01",
+          tags: ["health", "damage", "ui", "system"],
+          code: `using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+public class HealthSystem : MonoBehaviour
+{
+    public int maxHealth = 100;
+    public int currentHealth;
+    public Slider healthBar;
+    public float regenerationRate = 1f;
+    public float regenerationDelay = 5f;
+
+    void Start()
+    {
+        currentHealth = maxHealth;
+        UpdateHealthUI();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateHealthUI();
+        
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void UpdateHealthUI()
+    {
+        healthBar.value = (float)currentHealth / maxHealth;
+    }
+
+    void Die()
+    {
+        Debug.Log("Игрок умер!");
+    }
+}`
+        },
+        {
+          id: 4,
+          title: "Object Pool Manager",
+          description: "Менеджер пула объектов для оптимизации производительности игры.",
+          author: "PerfOptimizer",
+          authorAvatar: "P",
+          category: "other",
+          difficulty: "advanced",
+          downloads: 1560,
+          likes: 134,
+          date: "2025-02-10",
+          tags: ["pool", "optimization", "performance"],
+          code: `using UnityEngine;
+using System.Collections.Generic;
+
+public class ObjectPool : MonoBehaviour
+{
+    public GameObject prefab;
+    public int poolSize = 20;
+    
+    private Queue<GameObject> pool = new Queue<GameObject>();
+
+    void Start()
+    {
+        InitializePool();
+    }
+
+    void InitializePool()
+    {
+        for (int i = 0; i < poolSize; i++)
+        {
+            GameObject obj = Instantiate(prefab);
+            obj.SetActive(false);
+            pool.Enqueue(obj);
+        }
+    }
+
+    public GameObject GetFromPool()
+    {
+        GameObject obj = pool.Dequeue();
+        obj.SetActive(true);
+        pool.Enqueue(obj);
+        return obj;
+    }
+}`
+        },
+        {
+          id: 5,
+          title: "Simple Inventory",
+          description: "Базовая система инвентаря с добавлением, удалением и отображением предметов.",
+          author: "GameDev101",
+          authorAvatar: "G",
+          category: "ui",
+          difficulty: "intermediate",
+          downloads: 2100,
+          likes: 195,
+          date: "2025-02-15",
+          tags: ["inventory", "items", "ui"],
+          code: `using UnityEngine;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class Item
+{
+    public string name;
+    public Sprite icon;
+    public int quantity;
+}
+
+public class Inventory : MonoBehaviour
+{
+    public List<Item> items = new List<Item>();
+    public int maxSlots = 20;
+
+    public bool AddItem(Item newItem)
+    {
+        Item existingItem = items.Find(x => x.name == newItem.name);
+        
+        if (existingItem != null)
+        {
+            existingItem.quantity += newItem.quantity;
+            return true;
+        }
+        
+        if (items.Count < maxSlots)
+        {
+            items.Add(newItem);
+            return true;
+        }
+        
+        Debug.Log("Инвентарь полон!");
+        return false;
+    }
+
+    public void RemoveItem(string itemName)
+    {
+        items.RemoveAll(x => x.name == itemName);
+    }
+}`
+        },
+        {
+          id: 6,
+          title: "Day Night Cycle",
+          description: "Система смены дня и ночи с плавным переходом и настройкой длительности.",
+          author: "WorldBuilder",
+          authorAvatar: "W",
+          category: "effects",
+          difficulty: "intermediate",
+          downloads: 1780,
+          likes: 145,
+          date: "2025-03-01",
+          tags: ["day", "night", "cycle", "lighting"],
+          code: `using UnityEngine;
+
+public class DayNightCycle : MonoBehaviour
+{
+    public float dayDuration = 120f;
+    private float timeOfDay = 0f;
+
+    void Update()
+    {
+        timeOfDay += Time.deltaTime / dayDuration;
+        timeOfDay = timeOfDay % 1f;
+        
+        float sunAngle = timeOfDay * 360f - 90f;
+        Vector3 sunDirection = new Vector3(
+            Mathf.Cos(sunAngle * Mathf.Deg2Rad),
+            Mathf.Sin(sunAngle * Mathf.Deg2Rad),
+            0
+        );
+        
+        RenderSettings.sun.transform.forward = -sunDirection;
+    }
+}`
+        }
+      ],
+      shaders: [
+        {
+          id: 1,
+          title: "VHS Effect Shader",
+          description: "Эффект старой VHS-кассеты с шумами, искажениями и scanlines.",
+          author: "ShaderWizard",
+          authorAvatar: "S",
+          category: "effects",
+          difficulty: "advanced",
+          downloads: 890,
+          likes: 78,
+          date: "2025-01-25",
+          tags: ["vhs", "effect", "postprocessing"],
+          code: `Shader "Custom/VHS Effect"
+{
+    Properties
+    {
+        _MainTex ("Texture", 2D) = "white" {}
+        _NoiseIntensity ("Noise", Range(0,1)) = 0.1
+        _ScanlineDensity ("Scanlines", Range(0,1000)) = 300
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+            
+            struct appdata { float4 vertex : POSITION; float2 uv : TEXCOORD0; };
+            struct v2f { float2 uv : TEXCOORD0; float4 vertex : SV_POSITION; };
+            
+            sampler2D _MainTex;
+            float _NoiseIntensity;
+            float _ScanlineDensity;
+            
+            float rand(float2 co)
+            {
+                return frac(sin(dot(co, float2(12.9898, 78.233))) * 43758.5453);
+            }
+            
+            v2f vert(appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+            
+            fixed4 frag(v2f i) : SV_Target
+            {
+                fixed4 col = tex2D(_MainTex, i.uv);
+                float scanline = sin(i.uv.y * _ScanlineDensity);
+                col.rgb *= 1.0 - (scanline * 0.1);
+                float noise = rand(i.uv * _Time.y * 500);
+                col.rgb += noise * _NoiseIntensity;
+                return col;
+            }
+            ENDCG
+        }
+    }
+}`
+        },
+        {
+          id: 2,
+          title: "Toon Shader",
+          description: "Целлулоидный (мультяшный) шейдер с обводкой и ступенчатым освещением.",
+          author: "ToonArtist",
+          authorAvatar: "T",
+          category: "effects",
+          difficulty: "intermediate",
+          downloads: 1200,
+          likes: 95,
+          date: "2025-02-05",
+          tags: ["toon", "cel", "outline", "cartoon"],
+          code: `Shader "Custom/Toon Shader"
+{
+    Properties
+    {
+        _Color ("Color", Color) = (1,1,1,1)
+        _MainTex ("Texture", 2D) = "white" {}
+        _RampTex ("Ramp Texture", 2D) = "white" {}
+        _OutlineWidth ("Outline Width", Range(0,0.1)) = 0.02
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        
+        // Outline Pass
+        Pass
+        {
+            Cull Front
+            CGPROGRAM
+            // ... outline implementation
+            ENDCG
+        }
+        
+        // Main Pass
+        Pass
+        {
+            CGPROGRAM
+            // ... main rendering
+            ENDCG
+        }
+    }
+}`
+        },
+        {
+          id: 3,
+          title: "Water Shader",
+          description: "Простой шейдер воды с волнами, отражениями и прозрачностью.",
+          author: "NatureFX",
+          authorAvatar: "N",
+          category: "effects",
+          difficulty: "advanced",
+          downloads: 2300,
+          likes: 210,
+          date: "2025-02-20",
+          tags: ["water", "waves", "reflection", "transparent"],
+          code: `Shader "Custom/Water Shader"
+{
+    Properties
+    {
+        _Color ("Color", Color) = (0,0.3,0.5,0.7)
+        _WaveSpeed ("Wave Speed", Float) = 1.0
+        _WaveHeight ("Wave Height", Float) = 0.1
+        _MainTex ("Texture", 2D) = "white" {}
+    }
+    SubShader
+    {
+        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+        Blend SrcAlpha OneMinusSrcAlpha
+        
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            
+            float _WaveSpeed;
+            float _WaveHeight;
+            
+            struct v2f {
+                float4 pos : SV_POSITION;
+                float2 uv : TEXCOORD0;
+            };
+            
+            v2f vert(appdata_base v)
+            {
+                v2f o;
+                float wave = sin(v.vertex.x * 2 + _Time.y * _WaveSpeed) * _WaveHeight;
+                v.vertex.y += wave;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.uv = v.texcoord;
+                return o;
+            }
+            
+            fixed4 frag(v2f i) : SV_Target
+            {
+                return fixed4(0, 0.3, 0.5, 0.7);
+            }
+            ENDCG
+        }
+    }
+}`
+        }
+      ],
+      articles: [
+        {
+          id: 1,
+          title: "Как создать контроллер персонажа за 10 минут",
+          summary: "Пошаговое руководство по созданию базового контроллера персонажа в Unity с нуля.",
+          author: "AlexDev",
+          authorAvatar: "A",
+          level: "beginner",
+          readTime: "10 мин",
+          date: "2025-01-15",
+          likes: 340,
+          comments: 45,
+          views: 5600,
+          intro: "В этом руководстве мы создадим базовый контроллер персонажа, который позволит вашему персонажу ходить, бегать и прыгать. Это один из первых скриптов, который нужен практически в любой игре.",
+          steps: [
+            {
+              title: "Создайте новый скрипт",
+              content: "Откройте Unity и создайте новый C# скрипт с названием PlayerController. Дважды кликните по нему, чтобы открыть в редакторе кода.",
+              code: null
+            },
+            {
+              title: "Добавьте переменные скорости",
+              content: "Объявите публичные переменные для скорости движения и силы прыжка. Это позволит настраивать параметры прямо в инспекторе.",
+              code: `public float speed = 5f;
+public float jumpForce = 8f;
+private Rigidbody rb;`
+            },
+            {
+              title: "Инициализация в Start()",
+              content: "Получите компонент Rigidbody в методе Start. Это нужно для управления физикой персонажа.",
+              code: `void Start()
+{
+    rb = GetComponent<Rigidbody>();
+}`
+            },
+            {
+              title: "Обработка ввода",
+              content: "В методе Update() считывайте ввод с клавиатуры и применяйте движение к Rigidbody.",
+              code: `void Update()
+{
+    float h = Input.GetAxis("Horizontal");
+    float v = Input.GetAxis("Vertical");
+    
+    Vector3 move = transform.right * h + transform.forward * v;
+    rb.velocity = new Vector3(move.x * speed, rb.velocity.y, move.z * speed);
+}`
+            },
+            {
+              title: "Добавьте прыжок",
+              content: "Проверьте нажатие пробела и примените вертикальную силу для прыжка.",
+              code: `if (Input.GetButtonDown("Jump") && isGrounded)
+{
+    rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+}`
+            },
+            {
+              title: "Проверка земли",
+              content: "Используйте OnCollisionEnter/Exit для определения, стоит ли персонаж на земле.",
+              code: `void OnCollisionEnter(Collision col)
+{
+    if (col.gameObject.CompareTag("Ground"))
+        isGrounded = true;
+}
+
+void OnCollisionExit(Collision col)
+{
+    if (col.gameObject.CompareTag("Ground"))
+        isGrounded = false;
+}`
+            }
+          ]
+        },
+        {
+          id: 2,
+          title: "Создание системы инвентаря",
+          summary: "Научитесь создавать систему инвентаря с добавлением, удалением и отображением предметов.",
+          author: "GameDev101",
+          authorAvatar: "G",
+          level: "intermediate",
+          readTime: "15 мин",
+          date: "2025-02-01",
+          likes: 280,
+          comments: 32,
+          views: 4200,
+          intro: "Система инвентаря — один из ключевых элементов многих игр. В этом руководстве мы создадим базовую систему, которая поддерживает добавление и удаление предметов.",
+          steps: [
+            {
+              title: "Создайте класс Item",
+              content: "Определите структуру данных для предмета с названием, иконкой и количеством.",
+              code: `[System.Serializable]
+public class Item
+{
+    public string name;
+    public Sprite icon;
+    public int quantity;
+}`
+            },
+            {
+              title: "Создайте класс Inventory",
+              content: "Создайте менеджер инвентаря со списком предметов и максимальным количеством слотов.",
+              code: `public class Inventory : MonoBehaviour
+{
+    public List<Item> items = new List<Item>();
+    public int maxSlots = 20;
+}`
+            },
+            {
+              title: "Метод добавления предмета",
+              content: "Реализуйте логику добавления: если предмет уже есть — увеличиваем количество, иначе добавляем новый.",
+              code: `public bool AddItem(Item newItem)
+{
+    Item existing = items.Find(x => x.name == newItem.name);
+    if (existing != null)
+    {
+        existing.quantity += newItem.quantity;
+        return true;
+    }
+    if (items.Count < maxSlots)
+    {
+        items.Add(newItem);
+        return true;
+    }
+    return false;
+}`
+            },
+            {
+              title: "Отображение в UI",
+              content: "Создайте UI элементы для отображения каждого предмета в инвентаре.",
+              code: `public void UpdateInventoryUI()
+{
+    foreach (Transform slot in inventorySlots)
+    {
+        int index = slot.GetSiblingIndex();
+        if (index < items.Count)
+        {
+            slot.GetChild(0).GetComponent<Image>().sprite = items[index].icon;
+            slot.GetChild(1).GetComponent<Text>().text = items[index].quantity.ToString();
+        }
+    }
+}`
+            }
+          ]
+        },
+        {
+          id: 3,
+          title: "Оптимизация производительности в Unity",
+          summary: "Практические советы по оптимизации игр для достижения стабильных 60 FPS.",
+          author: "PerfOptimizer",
+          authorAvatar: "P",
+          level: "advanced",
+          readTime: "20 мин",
+          date: "2025-02-20",
+          likes: 410,
+          comments: 56,
+          views: 7800,
+          intro: "Оптимизация — критически важный этап разработки. В этой статье мы рассмотрим основные техники для достижения стабильной производительности в Unity.",
+          steps: [
+            {
+              title: "Используйте пул объектов",
+              content: "Вместо Instantiate/Destroy используйте Object Pooling для часто создаваемых объектов (пули, частицы).",
+              code: `public class ObjectPool : MonoBehaviour
+{
+    private Queue<GameObject> pool = new Queue<GameObject>();
+    
+    public GameObject Get()
+    {
+        GameObject obj = pool.Dequeue();
+        obj.SetActive(true);
+        pool.Enqueue(obj);
+        return obj;
+    }
+}`
+            },
+            {
+              title: "Сократите Draw Calls",
+              content: "Объединяйте материалы и используйте GPU Instancing для одинаковых объектов.",
+              code: null
+            },
+            {
+              title: "Оптимизируйте физику",
+              content: "Используйте Simple Colliders вместо Mesh Colliders, отключайте физику для неактивных объектов.",
+              code: null
+            },
+            {
+              title: "Профилирование",
+              content: "Используйте Unity Profiler для поиска узких мест в производительности.",
+              code: null
+            }
+          ]
+        }
+      ],
+      currentUser: null
+    };
+
+    // ===== RENDER FUNCTIONS =====
+    function renderScripts() {
+      const grid = document.getElementById('scriptsGrid');
+      const searchTerm = document.getElementById('searchScripts')?.value?.toLowerCase() || '';
+      const sortMode = document.getElementById('sortScripts')?.value || 'newest';
+
+      let filtered = appData.scripts.filter(s => 
+        s.title.toLowerCase().includes(searchTerm) || 
+        s.description.toLowerCase().includes(searchTerm) ||
+        s.tags.some(t => t.toLowerCase().includes(searchTerm))
+      );
+
+      if (sortMode === 'popular') filtered.sort((a, b) => b.downloads - a.downloads);
+      else if (sortMode === 'name') filtered.sort((a, b) => a.title.localeCompare(b.title));
+      else filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      grid.innerHTML = filtered.map(script => `
+        <div class="card-hover bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                  <span class="text-blue-600 dark:text-blue-400 font-bold text-sm">${script.authorAvatar}</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-lg">${script.title}</h3>
+                  <p class="text-xs text-gray-500">${script.author} • ${formatDate(script.date)}</p>
+                </div>
+              </div>
+              <span class="px-2 py-1 rounded-lg text-xs font-medium ${getDifficultyColor(script.difficulty)}">
+                ${getDifficultyLabel(script.difficulty)}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">${script.description}</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              ${script.tags.map(t => `<span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs text-gray-600 dark:text-gray-400">#${t}</span>`).join('')}
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+              <div class="flex items-center gap-4 text-sm text-gray-500">
+                <span class="flex items-center gap-1"><i data-lucide="download" class="w-4 h-4"></i> ${formatNumber(script.downloads)}</span>
+                <span class="flex items-center gap-1"><i data-lucide="heart" class="w-4 h-4"></i> ${script.likes}</span>
+              </div>
+              <button onclick="viewScript(${script.id})" class="px-4 py-2 bg-unity-600 hover:bg-unity-700 text-white text-sm rounded-lg transition-all flex items-center gap-2">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+                Смотреть
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderShaders() {
+      const grid = document.getElementById('shadersGrid');
+      grid.innerHTML = appData.shaders.map(shader => `
+        <div class="card-hover bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+          <div class="p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                  <span class="text-purple-600 dark:text-purple-400 font-bold text-sm">${shader.authorAvatar}</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-lg">${shader.title}</h3>
+                  <p class="text-xs text-gray-500">${shader.author} • ${formatDate(shader.date)}</p>
+                </div>
+              </div>
+              <span class="px-2 py-1 rounded-lg text-xs font-medium ${getDifficultyColor(shader.difficulty)}">
+                ${getDifficultyLabel(shader.difficulty)}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">${shader.description}</p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              ${shader.tags.map(t => `<span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs text-gray-600 dark:text-gray-400">#${t}</span>`).join('')}
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+              <div class="flex items-center gap-4 text-sm text-gray-500">
+                <span class="flex items-center gap-1"><i data-lucide="download" class="w-4 h-4"></i> ${formatNumber(shader.downloads)}</span>
+                <span class="flex items-center gap-1"><i data-lucide="heart" class="w-4 h-4"></i> ${shader.likes}</span>
+              </div>
+              <button onclick="viewScript(${shader.id}, 'shader')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-all flex items-center gap-2">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+                Смотреть
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderArticles(tab = 'all') {
+      const grid = document.getElementById('articlesGrid');
+      let filtered = tab === 'all' ? appData.articles : appData.articles.filter(a => a.level === tab);
+
+      grid.innerHTML = filtered.map(article => `
+        <div class="card-hover bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden cursor-pointer" onclick="viewArticle(${article.id})">
+          <div class="p-6">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="px-2 py-1 rounded-lg text-xs font-medium ${getLevelColor(article.level)}">
+                ${getLevelLabel(article.level)}
+              </span>
+              <span class="text-xs text-gray-500 flex items-center gap-1">
+                <i data-lucide="clock" class="w-3 h-3"></i> ${article.readTime}
+              </span>
+            </div>
+            <h3 class="font-semibold text-lg mb-2 line-clamp-2 hover:text-unity-600 transition-colors">${article.title}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">${article.summary}</p>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-unity-100 dark:bg-unity-900/30 rounded-full flex items-center justify-center">
+                  <span class="text-unity-600 dark:text-unity-400 font-bold text-xs">${article.authorAvatar}</span>
+                </div>
+                <span class="text-sm text-gray-600 dark:text-gray-400">${article.author}</span>
+              </div>
+              <div class="flex items-center gap-3 text-sm text-gray-500">
+                <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> ${formatNumber(article.views)}</span>
+                <span class="flex items-center gap-1"><i data-lucide="heart" class="w-3 h-3"></i> ${article.likes}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    // ===== UTILITY FUNCTIONS =====
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function formatNumber(num) {
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+      return num.toString();
+    }
+
+    function getDifficultyColor(diff) {
+      const colors = { beginner: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', intermediate: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400', advanced: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' };
+      return colors[diff] || colors.beginner;
+    }
+
+    function getDifficultyLabel(diff) {
+      const labels = { beginner: 'Начальный', intermediate: 'Средний', advanced: 'Продвинутый' };
+      return labels[diff] || diff;
+    }
+
+    function getLevelColor(level) {
+      return getDifficultyColor(level);
+    }
+
+    function getLevelLabel(level) {
+      return getDifficultyLabel(level);
+    }
+
+    // ===== INTERACTION FUNCTIONS =====
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      lucide.createIcons();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function filterScripts() {
+      renderScripts();
+    }
+
+    function sortScripts() {
+      renderScripts();
+    }
+
+    function filterByCategory(cat) {
+      if (cat === 'scripts') document.getElementById('scripts').scrollIntoView({ behavior: 'smooth' });
+      else if (cat === 'shaders') document.getElementById('shaders').scrollIntoView({ behavior: 'smooth' });
+      else if (cat === 'articles') document.getElementById('articles').scrollIntoView({ behavior: 'smooth' });
+      else if (cat === 'prefabs' || cat === 'materials' || cat === 'tutorials') {
+        showToast('info', 'Скоро!', 'Этот раздел находится в разработке');
+      }
+    }
+
+    function switchArticleTab(tab) {
+      document.querySelectorAll('.article-tab').forEach(t => {
+        t.classList.remove('tab-active');
+        t.classList.add('text-gray-500');
+      });
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('tab-active');
+      document.querySelector(`[data-tab="${tab}"]`).classList.remove('text-gray-500');
+      renderArticles(tab);
+    }
+
+    function viewScript(id, type = 'script') {
+      const item = type === 'shader' ? appData.shaders.find(s => s.id === id) : appData.scripts.find(s => s.id === id);
+      if (!item) return;
+
+      const modal = document.getElementById('viewScriptModal');
+      const content = document.getElementById('scriptModalContent');
+      
+      content.innerHTML = `
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 ${type === 'shader' ? 'bg-purple-100 dark:bg-purple-900/30' : 'bg-blue-100 dark:bg-blue-900/30'} rounded-xl flex items-center justify-center">
+            <span class="${type === 'shader' ? 'text-purple-600' : 'text-blue-600'} dark:${type === 'shader' ? 'text-purple-400' : 'text-blue-400'} font-bold text-lg">${item.authorAvatar}</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold">${item.title}</h3>
+            <p class="text-sm text-gray-500">${item.author} • ${formatDate(item.date)}</p>
+          </div>
+        </div>
+        <p class="text-gray-600 dark:text-gray-400 mb-6">${item.description}</p>
+        <div class="flex flex-wrap gap-2 mb-6">
+          ${item.tags.map(t => `<span class="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">#${t}</span>`).join('')}
+        </div>
+        <div class="code-block rounded-xl p-4 text-sm overflow-x-auto whitespace-pre">${highlightCode(item.code)}</div>
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-4 text-sm text-gray-500">
+            <span class="flex items-center gap-1"><i data-lucide="download" class="w-4 h-4"></i> ${formatNumber(item.downloads)}</span>
+            <span class="flex items-center gap-1"><i data-lucide="heart" class="w-4 h-4"></i> ${item.likes}</span>
+          </div>
+          <button onclick="copyCode('${type}', ${item.id})" class="px-4 py-2 bg-unity-600 hover:bg-unity-700 text-white text-sm rounded-lg transition-all flex items-center gap-2">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            Копировать код
+          </button>
+        </div>
+      `;
+      
+      openModal('viewScriptModal');
+      lucide.createIcons();
+    }
+
+    function viewArticle(id) {
+      const article = appData.articles.find(a => a.id === id);
+      if (!article) return;
+
+      const modal = document.getElementById('viewArticleModal');
+      const content = document.getElementById('articleModalContent');
+
+      let stepsHTML = article.steps.map((step, i) => `
+        <div class="article-step mb-8">
+          <div class="step-number">${i + 1}</div>
+          <h4 class="font-semibold text-lg mb-2">${step.title}</h4>
+          <p class="text-gray-600 dark:text-gray-400 mb-3">${step.content}</p>
+          ${step.code ? `<div class="code-block rounded-xl p-4 text-sm overflow-x-auto whitespace-pre">${highlightCode(step.code)}</div>` : ''}
+        </div>
+      `).join('');
+
+      content.innerHTML = `
+        <div class="mb-6">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="px-2 py-1 rounded-lg text-xs font-medium ${getLevelColor(article.level)}">${getLevelLabel(article.level)}</span>
+            <span class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> ${article.readTime}</span>
+          </div>
+          <h2 class="text-3xl font-bold mb-3">${article.title}</h2>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 bg-unity-100 dark:bg-unity-900/30 rounded-full flex items-center justify-center">
+              <span class="text-unity-600 dark:text-unity-400 font-bold text-sm">${article.authorAvatar}</span>
+            </div>
+            <div>
+              <p class="font-medium">${article.author}</p>
+              <p class="text-xs text-gray-500">${formatDate(article.date)}</p>
+            </div>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 leading-relaxed">${article.intro}</p>
+        </div>
+        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+          <i data-lucide="list-ordered" class="w-5 h-5 text-unity-600"></i>
+          Пошаговое руководство
+        </h3>
+        ${stepsHTML}
+        <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex items-center gap-4 text-sm text-gray-500">
+            <span class="flex items-center gap-1"><i data-lucide="eye" class="w-4 h-4"></i> ${formatNumber(article.views)}</span>
+            <span class="flex items-center gap-1"><i data-lucide="heart" class="w-4 h-4"></i> ${article.likes}</span>
+            <span class="flex items-center gap-1"><i data-lucide="message-circle" class="w-4 h-4"></i> ${article.comments}</span>
+          </div>
+        </div>
+      `;
+
+      openModal('viewArticleModal');
+      lucide.createIcons();
+    }
+
+    function highlightCode(code) {
+      if (!code) return '';
+      return code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
+        .replace(/(using|public|private|void|class|struct|if|else|for|return|new|float|int|bool|string|static|override|virtual|abstract|namespace|enum)/g, '<span class="keyword">$1</span>')
+        .replace(/(MonoBehaviour|Vector3|Transform|Rigidbody|GameObject|Component|Collider|Input|Mathf|Debug|Time|Quaternion|Color|Sprite|Image|Text|List|Queue)/g, '<span class="type">$1</span>')
+        .replace(/(".*?")/g, '<span class="string">$1</span>')
+        .replace(/(\d+\.?\d*[fF]?)\b/g, '<span class="number">$1</span>')
+        .replace(/\b(Start|Update|LateUpdate|Awake|FixedUpdate|OnEnable|OnDisable|OnCollisionEnter|OnCollisionExit|OnTriggerEnter|GetComponent|AddForce|Translate|LookAt|Lerp|Find|RemoveAll|Clamp|Sin|Cos)\b/g, '<span class="method">$1</span>');
+    }
+
+    function copyCode(type, id) {
+      const item = type === 'shader' ? appData.shaders.find(s => s.id === id) : appData.scripts.find(s => s.id === id);
+      if (item && item.code) {
+        navigator.clipboard.writeText(item.code).then(() => {
+          showToast('success', 'Скопировано!', 'Код скопирован в буфер обмена');
+        });
+      }
+    }
+
+    // ===== UPLOAD & SUBMIT =====
+    function submitResource() {
+      const title = document.getElementById('uploadTitle').value.trim();
+      const description = document.getElementById('uploadDescription').value.trim();
+      const category = document.getElementById('uploadCategory').value;
+      const code = document.getElementById('uploadCode').value.trim();
+      const tags = document.getElementById('uploadTags').value.split(',').map(t => t.trim()).filter(t => t);
+      const type = document.querySelector('input[name="resourceType"]:checked')?.value;
+      const difficulty = document.querySelector('input[name="difficulty"]:checked')?.value;
+
+      if (!title || !description) {
+        showToast('error', 'Ошибка', 'Заполните название и описание');
+        return;
+      }
+
+      if (type === 'script' || type === 'shader') {
+        if (!code) {
+          showToast('error', 'Ошибка', 'Вставьте код ресурса');
+          return;
+        }
+
+        const newItem = {
+          id: Date.now(),
+          title,
+          description,
+          author: appData.currentUser?.name || 'Аноним',
+          authorAvatar: (appData.currentUser?.name || 'А')[0].toUpperCase(),
+          category,
+          difficulty: difficulty || 'beginner',
+          downloads: 0,
+          likes: 0,
+          date: new Date().toISOString().split('T')[0],
+          tags,
+          code
+        };
+
+        if (type === 'shader') {
+          appData.shaders.unshift(newItem);
+          renderShaders();
+        } else {
+          appData.scripts.unshift(newItem);
+          renderScripts();
+        }
+      }
+
+      showToast('success', 'Загружено!', `"${title}" успешно добавлен`);
+      
+      // Clear form
+      document.getElementById('uploadTitle').value = '';
+      document.getElementById('uploadDescription').value = '';
+      document.getElementById('uploadCode').value = '';
+      document.getElementById('uploadTags').value = '';
+      clearFile();
+    }
+
+    function submitArticle() {
+      const title = document.getElementById('articleTitle').value.trim();
+      const summary = document.getElementById('articleSummary').value.trim();
+      const level = document.getElementById('articleLevel').value;
+      const readTime = document.getElementById('articleReadTime').value.trim() || '10 мин';
+      const intro = document.getElementById('articleIntro').value.trim();
+
+      if (!title || !summary || !intro) {
+        showToast('error', 'Ошибка', 'Заполните заголовок, описание и введение');
+        return;
+      }
+
+      const steps = [];
+      document.querySelectorAll('.step-entry').forEach((entry, i) => {
+        const stepTitle = entry.querySelector('.step-title').value.trim();
+        const stepContent = entry.querySelector('.step-content').value.trim();
+        const stepCode = entry.querySelector('.step-code').value.trim();
+        if (stepTitle && stepContent) {
+          steps.push({ title: stepTitle, content: stepContent, code: stepCode || null });
+        }
+      });
+
+      if (steps.length === 0) {
+        showToast('error', 'Ошибка', 'Добавьте хотя бы один шаг');
+        return;
+      }
+
+      const newArticle = {
+        id: Date.now(),
+        title,
+        summary,
+        author: appData.currentUser?.name || 'Аноним',
+        authorAvatar: (appData.currentUser?.name || 'А')[0].toUpperCase(),
+        level,
+        readTime,
+        date: new Date().toISOString().split('T')[0],
+        likes: 0,
+        comments: 0,
+        views: 0,
+        intro,
+        steps
+      };
+
+      appData.articles.unshift(newArticle);
+      renderArticles();
+      closeModal('createArticleModal');
+      showToast('success', 'Опубликовано!', `Статья "${title}" опубликована`);
+
+      // Clear form
+      document.getElementById('articleTitle').value = '';
+      document.getElementById('articleSummary').value = '';
+      document.getElementById('articleReadTime').value = '';
+      document.getElementById('articleIntro').value = '';
+      document.getElementById('stepsContainer').innerHTML = `
+        <div class="step-entry p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-8 h-8 bg-unity-100 dark:bg-unity-900/30 rounded-full flex items-center justify-center text-unity-600 dark:text-unity-400 font-bold text-sm">1</span>
+            <input type="text" class="step-title flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-sm outline-none focus:ring-2 focus:ring-unity-500" placeholder="Название шага">
+            <button onclick="removeStep(this)" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>
+          <textarea class="step-content w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-sm outline-none focus:ring-2 focus:ring-unity-500 resize-none" rows="3" placeholder="Описание шага..."></textarea>
+          <div class="mt-2"><textarea class="step-code w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-800 text-gray-200 font-mono text-xs outline-none focus:ring-2 focus:ring-unity-500 resize-none" rows="4" placeholder="// Код (необязательно)..."></textarea></div>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    function addStep() {
+      const container = document.getElementById('stepsContainer');
+      const count = container.children.length + 1;
+      const stepHTML = `
+        <div class="step-entry p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="w-8 h-8 bg-unity-100 dark:bg-unity-900/30 rounded-full flex items-center justify-center text-unity-600 dark:text-unity-400 font-bold text-sm">${count}</span>
+            <input type="text" class="step-title flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-sm outline-none focus:ring-2 focus:ring-unity-500" placeholder="Название шага">
+            <button onclick="removeStep(this)" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </div>
+          <textarea class="step-content w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-sm outline-none focus:ring-2 focus:ring-unity-500 resize-none" rows="3" placeholder="Описание шага..."></textarea>
+          <div class="mt-2"><textarea class="step-code w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-800 text-gray-200 font-mono text-xs outline-none focus:ring-2 focus:ring-unity-500 resize-none" rows="4" placeholder="// Код (необязательно)..."></textarea></div>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', stepHTML);
+      lucide.createIcons();
+    }
+
+    function removeStep(btn) {
+      const entry = btn.closest('.step-entry');
+      if (document.querySelectorAll('.step-entry').length > 1) {
+        entry.remove();
+        // Renumber
+        document.querySelectorAll('.step-entry').forEach((e, i) => {
+          e.querySelector('.step-number, span.w-8').textContent = i + 1;
+        });
+      }
+    }
+
+    // ===== FILE UPLOAD =====
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    if (dropZone) {
+      dropZone.addEventListener('click', () => fileInput.click());
+      
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+      });
+      
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-over');
+      });
+      
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer.files.length) {
+          handleFile(e.dataTransfer.files[0]);
+        }
+      });
+      
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files.length) {
+          handleFile(fileInput.files[0]);
+        }
+      });
+    }
+
+    function handleFile(file) {
+      document.getElementById('fileName').textContent = file.name;
+      document.getElementById('filePreview').classList.remove('hidden');
+    }
+
+    function clearFile() {
+      document.getElementById('filePreview').classList.add('hidden');
+      document.getElementById('fileInput').value = '';
+    }
+
+    // ===== AUTH =====
+    function loginUser() {
+      appData.currentUser = { name: 'User', email: 'user@example.com' };
+      closeModal('loginModal');
+      showToast('success', 'Вход выполнен', 'Добро пожаловать!');
+    }
+
+    function signupUser() {
+      const name = document.getElementById('signupName').value.trim();
+      if (name) {
+        appData.currentUser = { name, email: document.getElementById('signupEmail').value };
+        closeModal('signupModal');
+        showToast('success', 'Регистрация завершена', `Добро пожаловать, ${name}!`);
+      }
+    }
+
+    // ===== TOAST =====
+    function showToast(type, title, message) {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toastIcon');
+      const titleEl = document.getElementById('toastTitle');
+      const msgEl = document.getElementById('toastMessage');
+
+      const icons = {
+        success: { bg: 'bg-green-100 dark:bg-green-900/30', color: 'text-green-600 dark:text-green-400', icon: 'check-circle' },
+        error: { bg: 'bg-red-100 dark:bg-red-900/30', color: 'text-red-600 dark:text-red-400', icon: 'alert-circle' },
+        info: { bg: 'bg-blue-100 dark:bg-blue-900/30', color: 'text-blue-600 dark:text-blue-400', icon: 'info' }
+      };
+
+      const config = icons[type] || icons.info;
+      icon.className = `w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${config.bg}`;
+      icon.innerHTML = `<i data-lucide="${config.icon}" class="w-5 h-5 ${config.color}"></i>`;
+      titleEl.textContent = title;
+      msgEl.textContent = message;
+
+      toast.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-4', 'opacity-0');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 3000);
+
+      lucide.createIcons();
+    }
+
+    // ===== ANIMATED COUNTERS =====
+    function animateCounter(elementId, target, duration = 2000) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const start = 0;
+      const startTime = performance.now();
+      
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(start + (target - start) * eased);
+        el.textContent = formatNumber(current) + '+';
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    // ===== SCROLL PROGRESS =====
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const percent = (scrollTop / docHeight) * 100;
+      document.getElementById('progressBar').style.width = percent + '%';
+    });
+
+    // ===== INTERSECTION OBSERVER FOR STATS =====
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounter('statScripts', 500);
+          animateCounter('statShaders', 120);
+          animateCounter('statArticles', 80);
+          animateCounter('statUsers', 2400);
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+      renderScripts();
+      renderShaders();
+      renderArticles();
+      lucide.createIcons();
+      AOS.init({ duration: 800, once: true, offset: 100 });
+
+      const statsSection = document.querySelector('#statScripts')?.closest('section');
+      if (statsSection) statsObserver.observe(statsSection);
+    });
+  </script>
+</body>
+</html>
+
